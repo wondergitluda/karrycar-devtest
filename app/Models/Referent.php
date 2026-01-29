@@ -24,6 +24,8 @@ class Referent extends Model
 
     public function shipments()
     {
-        return $this->hasMany(Shipment::class);
+        return $this->belongsToMany(Shipment::class, 'referent_shipment', 'referent_id', 'shipment_id')
+            ->withPivot('id', 'scope')
+            ->withTimestamps();
     }
 }

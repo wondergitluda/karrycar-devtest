@@ -14,7 +14,7 @@ class ShipmentsController extends Controller
     public function index()
     {
         return Inertia::render('Shipments/Index', [
-            'shipments' => Shipment::with('referents','team')->limit(100)->get(),
+            'shipments' => Shipment::with('startReferents', 'endReferents', 'team')->limit(100)->get(),
         ]);
     }
 
@@ -40,7 +40,7 @@ class ShipmentsController extends Controller
     public function show(Shipment $shipment)
     {
         return Inertia::render('Shipments/Show', [
-            'shipment' => $shipment->load('referents', 'team'),
+            'shipment' => $shipment->load('referents', 'startReferents', 'endReferents', 'team'),
         ]);
     }
 

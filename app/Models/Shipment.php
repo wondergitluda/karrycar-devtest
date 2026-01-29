@@ -13,7 +13,25 @@ class Shipment extends Model
 
     public function referents()
     {
-        return $this->belongsToMany(Referent::class, 'referent_shipment', 'shipment_id')->withPivot('id','scope');
+        return $this->belongsToMany(Referent::class, 'referent_shipment', 'shipment_id', 'referent_id')
+            ->withPivot('id', 'scope')
+            ->withTimestamps();
+    }
+
+    public function startReferents()
+    {
+        return $this->belongsToMany(Referent::class, 'referent_shipment', 'shipment_id', 'referent_id')
+            ->withPivot('id', 'scope')
+            ->withTimestamps()
+            ->wherePivot('scope', 'start');
+    }
+
+    public function endReferents()
+    {
+        return $this->belongsToMany(Referent::class, 'referent_shipment', 'shipment_id', 'referent_id')
+            ->withPivot('id', 'scope')
+            ->withTimestamps()
+            ->wherePivot('scope', 'end');
     }
 
     public function team()

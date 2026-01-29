@@ -24,9 +24,9 @@
                 <div>
                     <h2 class="text-xl font-semibold mb-2">Start Referents</h2>
                     <ul class="list-disc list-inside">
-                        <li v-for="referent in shipment.referents.filter(r => r.pivot.scope === 'start')"
+                        <li v-for="referent in shipment.start_referents"
                             :key="referent.id">
-                            {{ referent.name }}
+                            {{ referent.name }} {{ referent.last_name }}
                             <br>
                             ({{ referent.email }})
                         </li>
@@ -43,9 +43,9 @@
                 <div>
                     <h2 class="text-xl font-semibold mb-2">End Referents</h2>
                     <ul class="list-disc list-inside">
-                        <li v-for="referent in shipment.referents.filter(r => r.pivot.scope === 'end')"
+                        <li v-for="referent in shipment.end_referents"
                             :key="referent.id">
-                            {{ referent.name }}
+                            {{ referent.name }} {{ referent.last_name }}
                             <br>
                             ({{ referent.email }})
                         </li>
