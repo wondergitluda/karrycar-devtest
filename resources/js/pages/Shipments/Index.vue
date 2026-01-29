@@ -110,7 +110,7 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type Shipment } from '@/types';
 import { Head } from '@inertiajs/vue3';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -124,7 +124,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const props = defineProps({
-    shipments: Array,
-});
+const props = defineProps<{
+    shipments: Shipment[];
+}>();
 </script>

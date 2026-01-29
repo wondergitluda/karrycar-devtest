@@ -1,16 +1,19 @@
 <template>
-
     <Head title="Shipments" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <h1 class="text-2xl font-semibold leading-tight">
-                Shipment #{{ shipment.id }}:
-                {{ shipment.from }} -> {{ shipment.to }}
+        <div
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+        >
+            <h1 class="text-2xl leading-tight font-semibold">
+                Shipment #{{ shipment.id }}: {{ shipment.from }} ->
+                {{ shipment.to }}
             </h1>
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">General Information</h2>
+                    <h2 class="mb-2 text-xl font-semibold">
+                        General Information
+                    </h2>
                     <p><strong>ID:</strong> {{ shipment.id }}</p>
                     <p><strong>TEAM:</strong> {{ shipment.team.name }}</p>
                     <p><strong>From:</strong> {{ shipment.from }}</p>
@@ -18,16 +21,18 @@
                 </div>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">Start Referents</h2>
-                    <ul class="list-disc list-inside">
-                        <li v-for="referent in shipment.start_referents"
-                            :key="referent.id">
+                    <h2 class="mb-2 text-xl font-semibold">Start Referents</h2>
+                    <ul class="list-inside list-disc">
+                        <li
+                            v-for="referent in shipment.start_referents"
+                            :key="referent.id"
+                        >
                             {{ referent.name }} {{ referent.last_name }}
-                            <br>
+                            <br />
                             ({{ referent.email }})
                         </li>
                     </ul>
@@ -37,16 +42,18 @@
                 </div>
             </div>
 
-            <hr>
+            <hr />
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <h2 class="text-xl font-semibold mb-2">End Referents</h2>
-                    <ul class="list-disc list-inside">
-                        <li v-for="referent in shipment.end_referents"
-                            :key="referent.id">
+                    <h2 class="mb-2 text-xl font-semibold">End Referents</h2>
+                    <ul class="list-inside list-disc">
+                        <li
+                            v-for="referent in shipment.end_referents"
+                            :key="referent.id"
+                        >
                             {{ referent.name }} {{ referent.last_name }}
-                            <br>
+                            <br />
                             ({{ referent.email }})
                         </li>
                     </ul>
@@ -55,21 +62,20 @@
                     <ReferentForm :shipment-id="shipment.id" scope="end" />
                 </div>
             </div>
-
         </div>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
+import ReferentForm from '@/components/ReferentForm.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem } from '@/types';
-import ReferentForm from '@/components/ReferentForm.vue';
+import { type BreadcrumbItem, type Shipment } from '@/types';
+import { Head } from '@inertiajs/vue3';
 
-const props = defineProps({
-    shipment: Array,
-});
+const props = defineProps<{
+    shipment: Shipment;
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -83,8 +89,6 @@ const breadcrumbs: BreadcrumbItem[] = [
     {
         title: props.shipment.from + ' -> ' + props.shipment.to,
         href: '',
-    }
+    },
 ];
-
-
 </script>
