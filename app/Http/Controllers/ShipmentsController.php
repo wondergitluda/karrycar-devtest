@@ -14,7 +14,7 @@ class ShipmentsController extends Controller
     public function index()
     {
         return Inertia::render('Shipments/Index', [
-            'shipments' => Shipment::with('startReferents', 'endReferents', 'team')->paginate(15),
+            'shipments' => Shipment::with('startReferents', 'endReferents', 'team')->paginate(50),
         ]);
     }
 
@@ -44,19 +44,22 @@ class ShipmentsController extends Controller
         ]);
     }
 
+    /**
+     * Add a referent to the specified shipment.
+     */
     public function addReferent(Request $request, Shipment $shipment)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:20',
-        ]);
-        $validated['team_id'] = $shipment->team_id;
+        // $validated = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'last_name' => 'required|string|max:255',
+        //     'email' => 'required|email|max:255',
+        //     'phone' => 'required|string|max:20',
+        // ]);
+        // $validated['team_id'] = $shipment->team_id;
 
-        $referent = $shipment->referents()->create($validated);
+        // $referent = $shipment->referents()->create($validated);
 
-        return response()->json($referent, 201);
+        // return response()->json($referent, 201);
     }
 
     /**

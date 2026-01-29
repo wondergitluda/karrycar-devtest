@@ -1,5 +1,6 @@
 export * from './auth';
 export * from './navigation';
+export * from './referent';
 export * from './shipment';
 export * from './ui';
 
