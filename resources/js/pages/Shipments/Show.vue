@@ -41,9 +41,7 @@
                     <ReferentForm :shipment-id="shipment.id" scope="start" />
                 </div>
             </div>
-
             <hr />
-
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <h2 class="mb-2 text-xl font-semibold">End Referents</h2>

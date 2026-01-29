@@ -14,7 +14,7 @@ class ShipmentsController extends Controller
     public function index()
     {
         return Inertia::render('Shipments/Index', [
-            'shipments' => Shipment::with('startReferents', 'endReferents', 'team')->limit(100)->get(),
+            'shipments' => Shipment::with('startReferents', 'endReferents', 'team')->paginate(15),
         ]);
     }
 

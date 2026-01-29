@@ -59,7 +59,7 @@
                 <tbody
                     class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900"
                 >
-                    <tr v-for="shipment in shipments" :key="shipment.id">
+                    <tr v-for="shipment in shipments.data" :key="shipment.id">
                         <td
                             class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
                         >
@@ -97,21 +97,30 @@
                                 :href="`/shipments/${shipment.id}/show`"
                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-600"
                             >
-                                Edit
+                                <SquarePenIcon class="h-4 w-4" />
                             </a>
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <Pagination :links="shipments.links" />
         </div>
     </AppLayout>
 </template>
 
 <script setup lang="ts">
+import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { type BreadcrumbItem, type Shipment } from '@/types';
+import {
+    type BreadcrumbItem,
+    type PaginatedData,
+    type Shipment,
+} from '@/types';
 import { Head } from '@inertiajs/vue3';
+import { SquarePenIcon } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -125,6 +134,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const props = defineProps<{
-    shipments: Shipment[];
+    shipments: PaginatedData<Shipment>;
 }>();
 </script>
