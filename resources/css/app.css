@@ -163,3 +163,36 @@ button {
 span[data-slot='button'] {
     @apply cursor-pointer;
 }
+
+.table-header-cell {
+    @apply px-6 py-3 text-left;
+}
+
+.table-cell {
+    @apply truncate px-6 py-1;
+}
+
+/** Typography **/
+.text-heading {
+    @apply text-2xl font-semibold text-balance text-primary dark:text-secondary;
+}
+
+.text-subheading {
+    @apply text-sm text-muted-foreground dark:text-muted;
+}
+
+.text-body {
+    @apply text-sm whitespace-nowrap text-primary dark:text-secondary;
+}
+
+.text-body-small {
+    @apply text-xs whitespace-nowrap text-muted-foreground dark:text-muted;
+}
+
+.text-label {
+    @apply text-xs font-semibold tracking-widest text-primary uppercase dark:text-secondary;
+}
+
+.text-underline {
+    @apply cursor-pointer underline-offset-2 hover:underline;
+}

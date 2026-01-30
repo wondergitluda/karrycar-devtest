@@ -26,35 +26,38 @@
                         <tr>
                             <th
                                 scope="col"
-                                class="px-6 py-2 text-left text-xs font-semibold tracking-wider text-gray-900 uppercase dark:text-gray-400"
+                                class="table-header-cell text-label"
                             >
                                 ID
                             </th>
                             <th
                                 scope="col"
-                                class="px-6 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                class="table-header-cell text-label"
                             >
                                 TEAM
                             </th>
                             <th
                                 scope="col"
-                                class="px-6 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                class="table-header-cell text-label"
                             >
                                 From
                             </th>
                             <th
                                 scope="col"
-                                class="px-6 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                class="table-header-cell text-label"
                             >
                                 To
                             </th>
                             <th
                                 scope="col"
-                                class="px-6 py-2 text-left text-xs font-medium tracking-wider text-gray-500 uppercase"
+                                class="table-header-cell text-label"
                             >
                                 Referents (s/e)
                             </th>
-                            <th scope="col" class="px-6 py-2"></th>
+                            <th
+                                scope="col"
+                                class="table-header-cell text-label"
+                            ></th>
                         </tr>
                     </thead>
                     <tbody
@@ -64,29 +67,23 @@
                             v-for="shipment in shipments.data"
                             :key="shipment.id"
                         >
-                            <td
-                                class="truncate px-6 py-3 text-sm whitespace-nowrap text-primary dark:text-gray-100"
-                            >
+                            <td class="text-body table-cell">
                                 {{ shipment.id }}
                             </td>
                             <td
-                                class="truncate px-6 py-3 text-sm font-medium whitespace-nowrap text-primary dark:text-gray-100"
+                                class="text-body text-underline table-cell font-medium"
                             >
-                                {{ shipment.team.name }}
+                                <a @click="viewShipment(shipment)">
+                                    {{ shipment.team.name }}
+                                </a>
                             </td>
-                            <td
-                                class="truncate px-6 py-3 text-sm whitespace-nowrap text-primary dark:text-gray-100"
-                            >
+                            <td class="text-body table-cell">
                                 {{ shipment.from }}
                             </td>
-                            <td
-                                class="truncate px-6 py-3 text-sm whitespace-nowrap text-primary dark:text-gray-100"
-                            >
+                            <td class="text-body table-cell">
                                 {{ shipment.to }}
                             </td>
-                            <td
-                                class="truncate px-6 py-3 text-sm whitespace-nowrap text-primary dark:text-gray-100"
-                            >
+                            <td class="text-body table-cell">
                                 {{ shipment.start_referents.length }} /
                                 {{ shipment.end_referents.length }}
                             </td>
@@ -221,7 +218,7 @@ const deleting = ref(false);
 const shipmentToDelete = ref<Shipment | null>(null);
 
 const viewShipment = (shipment: Shipment) => {
-    router.visit(`/shipments/${shipment.id}/show`);
+    router.visit(`/shipments/${shipment.id}`);
 };
 
 const openDeleteModal = (shipment: Shipment) => {

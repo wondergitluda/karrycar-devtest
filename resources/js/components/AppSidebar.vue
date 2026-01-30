@@ -14,7 +14,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, Truck, Users } from 'lucide-vue-next';
+import { LayoutGrid, Truck } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -27,11 +27,6 @@ const mainNavItems: NavItem[] = [
         title: 'Shipments',
         href: '/shipments',
         icon: Truck,
-    },
-    {
-        title: 'Referents',
-        href: '/referents',
-        icon: Users,
     },
 ];
 

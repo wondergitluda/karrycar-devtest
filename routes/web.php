@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ReferentsController;
+use App\Http\Controllers\ShipmentReferentController;
 use App\Http\Controllers\ShipmentsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,19 +19,14 @@ Route::get('dashboard', function () {
 Route::middleware(['auth', 'verified'])
     ->group(function () {
         /**
-         * Shipments Routes
+         * Shipments
          */
-        Route::get('/shipments', [ShipmentsController::class, 'index'])->name('shipments.index');
-        Route::get('/shipments/{shipment}/show', [ShipmentsController::class, 'show'])->name('shipments.show');
-        Route::post('/shipments/{shipment}/addReferent', [ShipmentsController::class, 'addReferent'])->name('shipments.add_referent');
-        Route::delete('/shipments/{shipment}/removeReferent/{pivotId}', [ShipmentsController::class, 'removeReferent'])->name('shipments.remove_referent');
-        Route::delete('/shipments/{shipment}', [ShipmentsController::class, 'destroy'])->name('shipments.destroy');
+        Route::resource('shipments', ShipmentsController::class)->only(['index', 'show', 'destroy']);
+
         /**
-         * Referents Routes
+         * Shipment Referents
          */
-        Route::get('/referents', [ReferentsController::class, 'index'])->name('referents.index');
-        Route::get('/referents/{referent}/show', [ReferentsController::class, 'show'])->name('referents.show');
-        Route::post('/referents/{referent}/addReferent', [ReferentsController::class, 'addReferent'])->name('referents.add_referent');
+        Route::resource('shipments.referents', ShipmentReferentController::class)->only(['index', 'store', 'destroy']);
     });
 
 require __DIR__.'/settings.php';
