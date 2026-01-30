@@ -85,4 +85,14 @@ class ShipmentsController extends Controller
     {
         //
     }
+
+    /**
+     * Remove a referent from the specified shipment.
+     */
+    public function removeReferent(Shipment $shipment, int $pivotId)
+    {
+        $shipment->referents()->wherePivot('id', $pivotId)->detach();
+
+        return response()->json(['success' => true]);
+    }
 }

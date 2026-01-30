@@ -24,6 +24,7 @@ Route::middleware(['auth', 'verified'])
         Route::get('/shipments', [ShipmentsController::class, 'index'])->name('shipments.index');
         Route::get('/shipments/{shipment}/show', [ShipmentsController::class, 'show'])->name('shipments.show');
         Route::post('/shipments/{shipment}/addReferent', [ShipmentsController::class, 'addReferent'])->name('shipments.add_referent');
+        Route::delete('/shipments/{shipment}/removeReferent/{pivotId}', [ShipmentsController::class, 'removeReferent'])->name('shipments.remove_referent');
         /**
          * Referents Routes
          */

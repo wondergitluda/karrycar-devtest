@@ -3,9 +3,13 @@
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl"
         >
-            <h1 class="text-2xl leading-tight font-semibold">Shipments</h1>
+            <h1
+                class="p-6 pb-3 text-3xl leading-tight font-semibold tracking-tighter"
+            >
+                Shipments
+            </h1>
             <!-- Table of shipments -->
             <table
                 class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"

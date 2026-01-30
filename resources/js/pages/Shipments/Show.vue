@@ -3,106 +3,230 @@
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
+            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-6"
         >
-            <h1 class="text-2xl leading-tight font-semibold">
+            <h1 class="px-0 pt-6 pb-3 text-3xl leading-tight font-semibold">
                 Shipment #{{ shipment.id }}: {{ shipment.from }} ->
                 {{ shipment.to }}
             </h1>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="mb-4 grid grid-cols-2 gap-4">
                 <div>
                     <h2 class="mb-2 text-xl font-semibold">
                         General Information
                     </h2>
-                    <p><strong>ID:</strong> {{ shipment.id }}</p>
-                    <p><strong>TEAM:</strong> {{ shipment.team.name }}</p>
-                    <p><strong>From:</strong> {{ shipment.from }}</p>
-                    <p><strong>To:</strong> {{ shipment.to }}</p>
+                    <div
+                        class="w-fit max-w-full min-w-lg divide-y rounded-xl border border-border"
+                    >
+                        <div
+                            class="grid grid-cols-3 items-center gap-4 px-4 py-3"
+                        >
+                            <div
+                                class="text-xs font-semibold tracking-wider text-primary uppercase"
+                            >
+                                ID
+                            </div>
+                            <div
+                                class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                            >
+                                {{ shipment.id }}
+                            </div>
+                        </div>
+                        <div
+                            class="grid grid-cols-3 items-center gap-4 px-4 py-3"
+                        >
+                            <div
+                                class="text-xs font-semibold tracking-wider text-primary uppercase"
+                            >
+                                TEAM
+                            </div>
+                            <div
+                                class="col-span-2 flex items-center justify-between gap-2 text-sm font-medium text-primary dark:text-gray-100"
+                            >
+                                {{ shipment.team.name || '-' }}
+                            </div>
+                        </div>
+                        <div
+                            class="grid grid-cols-3 items-center gap-4 px-4 py-3"
+                        >
+                            <div
+                                class="text-xs font-semibold tracking-wider text-primary uppercase"
+                            >
+                                FROM
+                            </div>
+                            <div
+                                class="col-span-2 flex items-center gap-1 text-sm font-medium text-primary dark:text-gray-100"
+                            >
+                                <Button
+                                    as-child
+                                    variant="ghost"
+                                    size="icon"
+                                    class="h-6 w-6"
+                                >
+                                    <span>
+                                        <MapPinIcon class="h-4 w-4" />
+                                    </span>
+                                </Button>
+                                {{ shipment.from || '-' }}
+                            </div>
+                        </div>
+                        <div
+                            class="grid grid-cols-3 items-center gap-4 px-4 py-3"
+                        >
+                            <div
+                                class="text-xs font-semibold tracking-wider text-primary uppercase"
+                            >
+                                TO
+                            </div>
+                            <div
+                                class="col-span-2 flex items-center gap-2 text-sm font-medium text-primary dark:text-gray-100"
+                            >
+                                <Button
+                                    as-child
+                                    variant="ghost"
+                                    size="icon"
+                                    class="h-6 w-6"
+                                >
+                                    <span>
+                                        <MapPinIcon class="h-4 w-4" />
+                                    </span>
+                                </Button>
+                                {{ shipment.to || '-' }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <hr />
-
+            <hr class="mb-4" />
             <template
                 v-for="(section, index) in referentSections"
                 :key="section.scope"
             >
-                <hr v-if="index > 0" />
-
-                <div>
+                <div class="block" :class="{ 'mt-8': index > 0 }">
                     <div class="mb-4 flex items-center justify-between">
-                        <h2 class="text-xl font-semibold">
-                            {{ section.title }}
-                        </h2>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            @click="openModal(section.scope)"
-                        >
-                            <PlusIcon class="mr-1 h-4 w-4" />
-                            Add
+                        <div>
+                            <h2 class="text-2xl font-semibold">
+                                {{ section.title }}
+                            </h2>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Manage the referents associated with this
+                                shipment below.
+                            </p>
+                        </div>
+                        <Button size="sm" @click="openModal(section.scope)">
+                            <PlusIcon class="h-4 w-4" />
+                            Add referent
                         </Button>
                     </div>
-                    <table
+                    <div
                         v-if="section.referents.length > 0"
-                        class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+                        class="overflow-hidden rounded-lg border border-border dark:border-gray-700"
                     >
-                        <thead class="bg-gray-50 dark:bg-gray-800">
-                            <tr>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                                >
-                                    Name
-                                </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                                >
-                                    Email
-                                </th>
-                                <th
-                                    scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                                >
-                                    Phone
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody
-                            class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900"
+                        <table
+                            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
                         >
-                            <tr
-                                v-for="referent in section.referents"
-                                :key="referent.id"
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        scope="col"
+                                        class="px-6 py-2 text-left text-xs font-semibold tracking-wider text-gray-900 uppercase dark:text-gray-400"
+                                    >
+                                        Name
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        class="px-6 py-2 text-left text-xs font-semibold tracking-wider text-gray-900 uppercase dark:text-gray-400"
+                                    >
+                                        Email
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        class="px-6 py-2 text-left text-xs font-semibold tracking-wider text-gray-900 uppercase dark:text-gray-400"
+                                    >
+                                        Phone
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        class="px-6 py-2 text-right text-xs font-semibold tracking-wider text-gray-900 uppercase dark:text-gray-400"
+                                    ></th>
+                                </tr>
+                            </thead>
+                            <tbody
+                                class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900"
                             >
-                                <td
-                                    class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
+                                <tr
+                                    v-for="referent in section.referents"
+                                    :key="referent.id"
                                 >
-                                    {{ referent.name }} {{ referent.last_name }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ referent.email }}
-                                </td>
-                                <td
-                                    class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100"
-                                >
-                                    {{ referent.phone }}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <td
+                                        class="truncate px-6 py-1 text-sm font-medium whitespace-nowrap text-primary dark:text-gray-100"
+                                    >
+                                        {{ referent.name }}
+                                        {{ referent.last_name }}
+                                    </td>
+                                    <td
+                                        class="truncate px-6 py-1 text-sm whitespace-nowrap text-primary dark:text-gray-100"
+                                    >
+                                        {{ referent.email }}
+                                    </td>
+                                    <td
+                                        class="truncate px-6 py-1 text-sm whitespace-nowrap text-primary dark:text-gray-100"
+                                    >
+                                        {{ referent.phone }}
+                                    </td>
+                                    <td
+                                        class="px-6 py-2 text-right text-sm whitespace-nowrap"
+                                    >
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger as-child>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                >
+                                                    <MoreHorizontalIcon
+                                                        class="h-4 w-4"
+                                                    />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    @click="
+                                                        openViewModal(referent)
+                                                    "
+                                                >
+                                                    <EyeIcon
+                                                        class="mr-1 h-4 w-4"
+                                                    />
+                                                    View
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem
+                                                    class="text-red-600 focus:bg-red-100 focus:text-red-700 dark:text-red-400 dark:focus:bg-red-900/20 dark:focus:text-red-300"
+                                                    @click="
+                                                        openDeleteModal(
+                                                            referent,
+                                                        )
+                                                    "
+                                                >
+                                                    <Trash2Icon
+                                                        class="mr-1 h-4 w-4"
+                                                    />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p v-else class="text-sm text-gray-500 dark:text-gray-400">
                         No {{ section.scope }} referents.
                     </p>
                 </div>
             </template>
         </div>
-
         <!-- Modal for adding referent -->
-        <Dialog v-model:open="isModalOpen">
+        <!-- <Dialog v-model:open="isModalOpen">
             <DialogContent class="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Add Referent</DialogTitle>
@@ -175,6 +299,171 @@
                     </DialogFooter>
                 </form>
             </DialogContent>
+        </Dialog> -->
+        <!-- Modal for viewing referent -->
+        <Dialog v-model:open="isViewModalOpen">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Referent Details</DialogTitle>
+                    <DialogDescription>
+                        View the details of this referent.
+                    </DialogDescription>
+                </DialogHeader>
+                <div v-if="referentToView" class="space-y-4 py-4">
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Name
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToView.name }}
+                            {{ referentToView.last_name }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Email
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToView.email || '-' }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Phone
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToView.phone || '-' }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Scope
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
+                                :class="
+                                    referentToView.pivot?.scope === 'start'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-secodary-foreground bg-secondary'
+                                "
+                            >
+                                {{ referentToView.pivot?.scope }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        @click="isViewModalOpen = false"
+                    >
+                        Close
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        <!-- Modal for deleting referent -->
+        <Dialog v-model:open="isDeleteModalOpen">
+            <DialogContent class="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Delete Referent</DialogTitle>
+                    <DialogDescription>
+                        Are you sure you want to remove this referent from the
+                        shipment? This action cannot be undone.
+                    </DialogDescription>
+                </DialogHeader>
+                <div v-if="referentToDelete" class="space-y-4 py-4">
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Name
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToDelete.name }}
+                            {{ referentToDelete.last_name }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Email
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToDelete.email || '-' }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Phone
+                        </div>
+                        <div
+                            class="col-span-2 text-sm font-medium text-primary dark:text-gray-100"
+                        >
+                            {{ referentToDelete.phone || '-' }}
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <div
+                            class="text-xs font-semibold tracking-wider text-gray-400 uppercase"
+                        >
+                            Scope
+                        </div>
+                        <div class="col-span-2">
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium capitalize"
+                                :class="
+                                    referentToDelete.pivot?.scope === 'start'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'text-secodary-foreground bg-secondary'
+                                "
+                            >
+                                {{ referentToDelete.pivot?.scope }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        @click="isDeleteModalOpen = false"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="destructive"
+                        :disabled="deleting"
+                        @click="deleteReferent"
+                    >
+                        {{ deleting ? 'Deleting...' : 'Delete' }}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
         </Dialog>
     </AppLayout>
 </template>
@@ -189,14 +478,25 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type Shipment } from '@/types';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
-import { PlusIcon } from 'lucide-vue-next';
+import {
+    EyeIcon,
+    MapPinIcon,
+    MoreHorizontalIcon,
+    PlusIcon,
+    Trash2Icon,
+} from 'lucide-vue-next';
 import { computed, reactive, ref } from 'vue';
 
 const props = defineProps<{
@@ -233,6 +533,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const isModalOpen = ref(false);
 const loading = ref(false);
+const isDeleteModalOpen = ref(false);
+const deleting = ref(false);
+const referentToDelete = ref<any>(null);
+const isViewModalOpen = ref(false);
+const referentToView = ref<any>(null);
 
 const form = reactive({
     name: '',
@@ -261,6 +566,33 @@ const submitForm = async () => {
         console.error('Error saving referent:', error);
     } finally {
         loading.value = false;
+    }
+};
+
+const openViewModal = (referent: any) => {
+    referentToView.value = referent;
+    isViewModalOpen.value = true;
+};
+
+const openDeleteModal = (referent: any) => {
+    referentToDelete.value = referent;
+    isDeleteModalOpen.value = true;
+};
+
+const deleteReferent = async () => {
+    if (!referentToDelete.value?.pivot?.id) return;
+
+    deleting.value = true;
+    try {
+        await axios.delete(
+            `/shipments/${props.shipment.id}/removeReferent/${referentToDelete.value.pivot.id}`,
+        );
+        isDeleteModalOpen.value = false;
+        window.location.reload();
+    } catch (error) {
+        console.error('Error deleting referent:', error);
+    } finally {
+        deleting.value = false;
     }
 };
 </script>

@@ -1,6 +1,7 @@
 export interface Shipment {
     id: number;
     team: {
+        id: number;
         name: string;
     };
     from: string;
