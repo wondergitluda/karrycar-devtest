@@ -215,14 +215,15 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import type { ReferentScope, SearchReferent } from '@/types';
 import axios from 'axios';
 import { Loader2Icon, SearchIcon, UserPlusIcon } from 'lucide-vue-next';
-import { onUnmounted, reactive, ref, watch } from 'vue';
+import { computed, onUnmounted, reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
     open: boolean;
     shipmentId: number;
-    scope: 'start' | 'end';
+    scope: ReferentScope;
 }>();
 
 const emit = defineEmits<{
@@ -232,11 +233,13 @@ const emit = defineEmits<{
 
 const mode = ref<'search' | 'create'>('search');
 const searchQuery = ref('');
-const searchResults = ref<any[]>([]);
+const searchResults = ref<SearchReferent[]>([]);
 const searching = ref(false);
-const selectedReferent = ref<any>(null);
+const selectedReferent = ref<SearchReferent | null>(null);
 const formError = ref('');
 const loading = ref(false);
+
+const apiUrl = computed(() => `/shipments/${props.shipmentId}/referents`);
 
 const form = reactive({
     name: '',
@@ -285,22 +288,21 @@ onUnmounted(() => {
 
 const searchReferents = async (query: string) => {
     searching.value = true;
+    formError.value = '';
     try {
-        const response = await axios.get(
-            `/shipments/${props.shipmentId}/referents`,
-            {
-                params: { query, scope: props.scope },
-            },
-        );
+        const response = await axios.get<SearchReferent[]>(apiUrl.value, {
+            params: { query, scope: props.scope },
+        });
         searchResults.value = response.data;
     } catch (error) {
+        formError.value = 'Failed to search referents. Please try again.';
         console.error('Error searching referents:', error);
     } finally {
         searching.value = false;
     }
 };
 
-const selectReferent = (referent: any) => {
+const selectReferent = (referent: SearchReferent) => {
     if (referent.already_attached) return;
     selectedReferent.value = referent;
 };
@@ -317,13 +319,13 @@ const submitForm = async () => {
                 return;
             }
 
-            await axios.post(`/shipments/${props.shipmentId}/referents`, {
+            await axios.post(apiUrl.value, {
                 mode: 'existing',
                 referent_id: selectedReferent.value.id,
                 scope: props.scope,
             });
         } else {
-            await axios.post(`/shipments/${props.shipmentId}/referents`, {
+            await axios.post(apiUrl.value, {
                 mode: 'create',
                 scope: props.scope,
                 ...form,

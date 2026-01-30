@@ -70,10 +70,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import type { Referent } from '@/types';
 
 defineProps<{
     open: boolean;
-    referent: any | null;
+    referent: Referent | null;
 }>();
 
 defineEmits<{

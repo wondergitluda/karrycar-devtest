@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ReferentScope;
+use App\Http\Requests\StoreShipmentReferentRequest;
 use App\Models\Referent;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
@@ -36,11 +38,7 @@ class ShipmentReferentController extends Controller
             ->toArray();
 
         // Mark which referents are already attached
-        $referents = $referents->map(function ($referent) use ($existingReferentIds) {
-            $referent->already_attached = in_array($referent->id, $existingReferentIds);
-
-            return $referent;
-        });
+        $referents->each(fn ($referent) => $referent->already_attached = in_array($referent->id, $existingReferentIds));
 
         return response()->json($referents);
     }
@@ -48,22 +46,16 @@ class ShipmentReferentController extends Controller
     /**
      * Attach an existing referent or create a new one and attach it to the shipment.
      */
-    public function store(Request $request, Shipment $shipment)
+    public function store(StoreShipmentReferentRequest $request, Shipment $shipment)
     {
-        $mode = $request->input('mode', 'existing');
-        $scope = $request->input('scope');
+        $validated = $request->validated();
+        $scope = ReferentScope::from($validated['scope']);
 
-        if (! in_array($scope, ['start', 'end'])) {
-            throw ValidationException::withMessages([
-                'scope' => ['Invalid scope. Must be "start" or "end".'],
-            ]);
+        if ($validated['mode'] === 'existing') {
+            return $this->attachExisting($validated, $shipment, $scope);
         }
 
-        if ($mode === 'existing') {
-            return $this->attachExisting($request, $shipment, $scope);
-        }
-
-        return $this->createAndAttach($request, $shipment, $scope);
+        return $this->createAndAttach($validated, $shipment, $scope);
     }
 
     /**
@@ -79,14 +71,9 @@ class ShipmentReferentController extends Controller
     /**
      * Attach an existing referent to the shipment.
      */
-    private function attachExisting(Request $request, Shipment $shipment, string $scope)
+    private function attachExisting(array $validated, Shipment $shipment, ReferentScope $scope)
     {
-        $request->validate([
-            'referent_id' => 'required|integer|exists:referents,id',
-        ]);
-
-        $referentId = $request->input('referent_id');
-        $referent = Referent::findOrFail($referentId);
+        $referent = Referent::findOrFail($validated['referent_id']);
 
         if ($referent->team_id !== $shipment->team_id) {
             throw ValidationException::withMessages([
@@ -95,8 +82,8 @@ class ShipmentReferentController extends Controller
         }
 
         $alreadyAttached = $shipment->referents()
-            ->wherePivot('referent_id', $referentId)
-            ->wherePivot('scope', $scope)
+            ->wherePivot('referent_id', $referent->id)
+            ->wherePivot('scope', $scope->value)
             ->exists();
 
         if ($alreadyAttached) {
@@ -105,7 +92,7 @@ class ShipmentReferentController extends Controller
             ]);
         }
 
-        $shipment->referents()->attach($referentId, ['scope' => $scope]);
+        $shipment->referents()->attach($referent->id, ['scope' => $scope->value]);
 
         return response()->json(['success' => true, 'referent' => $referent]);
     }
@@ -113,15 +100,8 @@ class ShipmentReferentController extends Controller
     /**
      * Create a new referent and attach it to the shipment.
      */
-    private function createAndAttach(Request $request, Shipment $shipment, string $scope)
+    private function createAndAttach(array $validated, Shipment $shipment, ReferentScope $scope)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
-        ]);
-
         // Check for duplicate email within the same team
         $existingReferent = Referent::where('team_id', $shipment->team_id)
             ->where('email', $validated['email'])
@@ -133,10 +113,15 @@ class ShipmentReferentController extends Controller
             ]);
         }
 
-        $validated['team_id'] = $shipment->team_id;
-        $referent = Referent::create($validated);
+        $referent = Referent::create([
+            'name' => $validated['name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'team_id' => $shipment->team_id,
+        ]);
 
-        $shipment->referents()->attach($referent->id, ['scope' => $scope]);
+        $shipment->referents()->attach($referent->id, ['scope' => $scope->value]);
 
         return response()->json(['success' => true, 'referent' => $referent], 201);
     }
