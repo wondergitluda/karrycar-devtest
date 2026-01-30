@@ -147,12 +147,13 @@
                         />
                     </div>
                     <div class="flex flex-col gap-1">
-                        <Label for="email" class="text-label">Email</Label>
+                        <Label for="email" class="text-label">Email *</Label>
                         <Input
                             id="email"
                             type="email"
                             placeholder="Email"
                             v-model="form.email"
+                            required
                         />
                     </div>
                     <div class="flex flex-col gap-1">

@@ -18,6 +18,11 @@ class Referent extends Model
         'phone',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function team()
     {
         return $this->belongsTo(Team::class);

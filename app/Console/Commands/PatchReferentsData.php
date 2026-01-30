@@ -19,20 +19,37 @@ class PatchReferentsData extends Command
      *
      * @var string
      */
-    protected $description = 'Deduplicate referents based on email and team_id';
+    protected $description = 'Deduplicate referents and clean invalid shipment associations';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        if (! $this->confirm('This will deduplicate referents based on email and team_id. Do you wish to continue?')) {
-            return;
+        $this->info('=== REFERENTS DATA CLEANUP ===');
+        $this->newLine();
+
+        // Task 1: Deduplicate referents (required)
+        $this->task1DeduplicateReferents();
+
+        // Task 2: Clean invalid associations (optional)
+        if ($this->confirm('Do you want to clean invalid referent-shipment associations (different team_id)?', false)) {
+            $this->task2CleanInvalidAssociations();
         }
+
+        $this->newLine();
+        $this->info('✓ Cleanup completed successfully!');
+    }
+
+    /**
+     * Task 1: Deduplicate referents based on email and team_id.
+     */
+    private function task1DeduplicateReferents()
+    {
+        $this->info('TASK 1: Deduplicating referents...');
 
         $duplicateGroups = DB::table('referents')
             ->select('team_id', 'email', DB::raw('MIN(id) as parent_id'), DB::raw('COUNT(*) as count'))
-            ->whereNotNull('email')
             ->groupBy('team_id', 'email')
             ->having(DB::raw('COUNT(*)'), '>', 1)
             ->get();
@@ -84,5 +101,50 @@ class PatchReferentsData extends Command
                 ->update(['deleted_at' => now()]);
         }
 
+        $totalDuplicates = $duplicateGroups->sum('count') - $duplicateGroups->count();
+        $this->info("✓ Deduplicated {$totalDuplicates} referent(s)");
+    }
+
+    /**
+     * Task 2: Clean invalid referent-shipment associations.
+     */
+    private function task2CleanInvalidAssociations()
+    {
+        $this->info('TASK 2: Cleaning invalid associations...');
+
+        // Find associations where referent team_id != shipment team_id
+        $invalidAssociations = DB::table('referent_shipment as rs')
+            ->join('referents as r', 'rs.referent_id', '=', 'r.id')
+            ->join('shipments as s', 'rs.shipment_id', '=', 's.id')
+            ->whereColumn('r.team_id', '!=', 's.team_id')
+            ->select('rs.id', 'rs.referent_id', 'rs.shipment_id', 'r.team_id as referent_team', 's.team_id as shipment_team')
+            ->get();
+
+        if ($invalidAssociations->isEmpty()) {
+            $this->info('✓ No invalid associations found!');
+
+            return;
+        }
+
+        $this->warn("Found {$invalidAssociations->count()} invalid association(s):");
+
+        // Show a sample of invalid associations
+        foreach ($invalidAssociations->take(5) as $assoc) {
+            $this->line("  - Referent #{$assoc->referent_id} (team {$assoc->referent_team}) linked to Shipment #{$assoc->shipment_id} (team {$assoc->shipment_team})");
+        }
+
+        if ($invalidAssociations->count() > 5) {
+            $this->line('  ... and '.($invalidAssociations->count() - 5).' more');
+        }
+
+        if ($this->confirm('Delete these invalid associations?', true)) {
+            $deletedCount = DB::table('referent_shipment')
+                ->whereIn('id', $invalidAssociations->pluck('id'))
+                ->delete();
+
+            $this->info("✓ Deleted {$deletedCount} invalid association(s)");
+        } else {
+            $this->warn('Skipped deletion');
+        }
     }
 }

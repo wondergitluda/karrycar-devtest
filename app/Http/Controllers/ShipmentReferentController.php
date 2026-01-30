@@ -19,7 +19,7 @@ class ShipmentReferentController extends Controller
 
         $referentsQuery = Referent::where('team_id', $shipment->team_id);
 
-        if (!empty($query)) {
+        if (! empty($query)) {
             $referentsQuery->where(function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
                     ->orWhere('last_name', 'like', "%{$query}%")
@@ -38,6 +38,7 @@ class ShipmentReferentController extends Controller
         // Mark which referents are already attached
         $referents = $referents->map(function ($referent) use ($existingReferentIds) {
             $referent->already_attached = in_array($referent->id, $existingReferentIds);
+
             return $referent;
         });
 
@@ -52,7 +53,7 @@ class ShipmentReferentController extends Controller
         $mode = $request->input('mode', 'existing');
         $scope = $request->input('scope');
 
-        if (!in_array($scope, ['start', 'end'])) {
+        if (! in_array($scope, ['start', 'end'])) {
             throw ValidationException::withMessages([
                 'scope' => ['Invalid scope. Must be "start" or "end".'],
             ]);
@@ -117,20 +118,19 @@ class ShipmentReferentController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
+            'email' => 'required|email|max:255',
             'phone' => 'nullable|string|max:20',
         ]);
 
-        if (!empty($validated['email'])) {
-            $existingReferent = Referent::where('team_id', $shipment->team_id)
-                ->where('email', $validated['email'])
-                ->first();
+        // Check for duplicate email within the same team
+        $existingReferent = Referent::where('team_id', $shipment->team_id)
+            ->where('email', $validated['email'])
+            ->first();
 
-            if ($existingReferent) {
-                throw ValidationException::withMessages([
-                    'email' => ['A referent with this email already exists for this team.'],
-                ]);
-            }
+        if ($existingReferent) {
+            throw ValidationException::withMessages([
+                'email' => ['A referent with this email already exists for this team.'],
+            ]);
         }
 
         $validated['team_id'] = $shipment->team_id;
