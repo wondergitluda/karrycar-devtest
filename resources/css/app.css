@@ -159,3 +159,7 @@ h6 {
 button {
     @apply cursor-pointer pr-4 pl-3;
 }
+
+span[data-slot='button'] {
+    @apply cursor-pointer;
+}

@@ -83,7 +83,9 @@ class ShipmentsController extends Controller
      */
     public function destroy(Shipment $shipment)
     {
-        //
+        $shipment->delete();
+
+        return response()->json(['success' => true]);
     }
 
     /**

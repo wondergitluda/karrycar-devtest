@@ -5,15 +5,28 @@
         <div
             class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-6"
         >
-            <h1 class="px-0 pt-6 pb-3 text-3xl leading-tight font-semibold">
-                Shipment #{{ shipment.id }}: {{ shipment.from }} ->
-                {{ shipment.to }}
-            </h1>
+            <header class="flex items-center justify-between px-0 py-3">
+                <div class="flex flex-col">
+                    <h1 class="text-3xl leading-tight font-semibold">
+                        Shipment #{{ shipment.id }}
+                    </h1>
+                    <p class="px-0 text-gray-600 dark:text-gray-400">
+                        {{ shipment.from }} ->
+                        {{ shipment.to }}
+                    </p>
+                </div>
+            </header>
             <div class="mb-4 grid grid-cols-2 gap-4">
                 <div>
-                    <h2 class="mb-2 text-xl font-semibold">
-                        General Information
-                    </h2>
+                    <header class="mb-4 flex flex-col">
+                        <h2 class="text-xl font-semibold">
+                            General Information
+                        </h2>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            Manage the referents associated with this shipment
+                            below.
+                        </p>
+                    </header>
                     <div
                         class="w-fit max-w-full min-w-lg divide-y rounded-xl border border-border"
                     >
@@ -103,7 +116,7 @@
             >
                 <div class="block" :class="{ 'mt-8': index > 0 }">
                     <div class="mb-4 flex items-center justify-between">
-                        <div>
+                        <header>
                             <h2 class="text-2xl font-semibold">
                                 {{ section.title }}
                             </h2>
@@ -111,7 +124,7 @@
                                 Manage the referents associated with this
                                 shipment below.
                             </p>
-                        </div>
+                        </header>
                         <Button size="sm" @click="openModal(section.scope)">
                             <PlusIcon class="h-4 w-4" />
                             Add referent
@@ -174,7 +187,7 @@
                                         {{ referent.phone }}
                                     </td>
                                     <td
-                                        class="px-6 py-2 text-right text-sm whitespace-nowrap"
+                                        class="px-6 py-1 text-right text-sm whitespace-nowrap"
                                     >
                                         <DropdownMenu>
                                             <DropdownMenuTrigger as-child>
