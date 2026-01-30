@@ -19,10 +19,10 @@ class ShipmentReferentController extends Controller
         $query = $request->get('query', '');
         $scope = $request->get('scope', '');
 
-        $referentsQuery = Referent::where('team_id', $shipment->team_id);
+        $referentsQuery = Referent::query()->where('team_id', $shipment->team_id);
 
         if (! empty($query)) {
-            $referentsQuery->where(function ($q) use ($query) {
+            $referentsQuery->where(function ($q) use ($query): void {
                 $q->where('name', 'like', "%{$query}%")
                     ->orWhere('last_name', 'like', "%{$query}%")
                     ->orWhere('email', 'like', "%{$query}%");
@@ -38,7 +38,7 @@ class ShipmentReferentController extends Controller
             ->toArray();
 
         // Mark which referents are already attached
-        $referents->each(fn ($referent) => $referent->already_attached = in_array($referent->id, $existingReferentIds));
+        $referents->each(fn ($referent): bool => $referent->already_attached = in_array($referent->id, $existingReferentIds));
 
         return response()->json($referents);
     }
@@ -73,7 +73,7 @@ class ShipmentReferentController extends Controller
      */
     private function attachExisting(array $validated, Shipment $shipment, ReferentScope $scope)
     {
-        $referent = Referent::findOrFail($validated['referent_id']);
+        $referent = Referent::query()->findOrFail($validated['referent_id']);
 
         if ($referent->team_id !== $shipment->team_id) {
             throw ValidationException::withMessages([
@@ -103,7 +103,7 @@ class ShipmentReferentController extends Controller
     private function createAndAttach(array $validated, Shipment $shipment, ReferentScope $scope)
     {
         // Check for duplicate email within the same team
-        $existingReferent = Referent::where('team_id', $shipment->team_id)
+        $existingReferent = Referent::query()->where('team_id', $shipment->team_id)
             ->where('email', $validated['email'])
             ->first();
 
@@ -113,7 +113,7 @@ class ShipmentReferentController extends Controller
             ]);
         }
 
-        $referent = Referent::create([
+        $referent = Referent::query()->create([
             'name' => $validated['name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],

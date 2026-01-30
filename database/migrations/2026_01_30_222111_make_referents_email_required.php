@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('referents', function (Blueprint $table) {
+        Schema::table('referents', function (Blueprint $table): void {
             // First, delete any referents with null email (cleanup)
             \Illuminate\Support\Facades\DB::table('referents')
                 ->whereNull('email')
@@ -27,7 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('referents', function (Blueprint $table) {
+        Schema::table('referents', function (Blueprint $table): void {
             $table->string('email')->nullable()->change();
         });
     }

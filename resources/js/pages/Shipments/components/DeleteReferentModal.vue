@@ -78,6 +78,8 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
+import { computed, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -88,8 +90,6 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import type { Referent } from '@/types';
-import axios from 'axios';
-import { computed, ref } from 'vue';
 
 const props = defineProps<{
     open: boolean;

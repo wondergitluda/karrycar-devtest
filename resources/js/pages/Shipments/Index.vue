@@ -179,6 +179,8 @@
 </template>
 
 <script setup lang="ts">
+import { Head, router } from '@inertiajs/vue3';
+import { EyeIcon, MoreHorizontalIcon } from 'lucide-vue-next';
 import Pagination from '@/components/Pagination.vue';
 import {
     DropdownMenu,
@@ -193,10 +195,6 @@ import {
     type PaginatedData,
     type Shipment,
 } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
-import axios from 'axios';
-import { EyeIcon, MoreHorizontalIcon } from 'lucide-vue-next';
-import { ref } from 'vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -213,31 +211,7 @@ defineProps<{
     shipments: PaginatedData<Shipment>;
 }>();
 
-const isDeleteModalOpen = ref(false);
-const deleting = ref(false);
-const shipmentToDelete = ref<Shipment | null>(null);
-
 const viewShipment = (shipment: Shipment) => {
     router.visit(`/shipments/${shipment.id}`);
-};
-
-const openDeleteModal = (shipment: Shipment) => {
-    shipmentToDelete.value = shipment;
-    isDeleteModalOpen.value = true;
-};
-
-const deleteShipment = async () => {
-    if (!shipmentToDelete.value) return;
-
-    deleting.value = true;
-    try {
-        await axios.delete(`/shipments/${shipmentToDelete.value.id}`);
-        isDeleteModalOpen.value = false;
-        window.location.reload();
-    } catch (error) {
-        console.error('Error deleting shipment:', error);
-    } finally {
-        deleting.value = false;
-    }
 };
 </script>

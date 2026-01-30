@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button';
-import type { PaginationLink } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
+import type { PaginationLink } from '@/types';
 
 interface Props {
     links: PaginationLink[];

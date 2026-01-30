@@ -18,7 +18,7 @@ return new class extends Migration
     public function up(): void
     {
         foreach ($this->tables as $table) {
-            Schema::table($table, function (Blueprint $table) {
+            Schema::table($table, function (Blueprint $table): void {
                 $table->softDeletes();
             });
         }
@@ -30,7 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         foreach ($this->tables as $table) {
-            Schema::table($table, function (Blueprint $table) {
+            Schema::table($table, function (Blueprint $table): void {
                 $table->dropSoftDeletes();
             });
         }

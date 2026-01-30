@@ -24,7 +24,7 @@ class PatchReferentsData extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->info('=== REFERENTS DATA CLEANUP ===');
         $this->newLine();
@@ -44,7 +44,7 @@ class PatchReferentsData extends Command
     /**
      * Task 1: Deduplicate referents based on email and team_id.
      */
-    private function task1DeduplicateReferents()
+    private function task1DeduplicateReferents(): void
     {
         $this->info('TASK 1: Deduplicating referents...');
 
@@ -108,7 +108,7 @@ class PatchReferentsData extends Command
     /**
      * Task 2: Clean invalid referent-shipment associations.
      */
-    private function task2CleanInvalidAssociations()
+    private function task2CleanInvalidAssociations(): void
     {
         $this->info('TASK 2: Cleaning invalid associations...');
 

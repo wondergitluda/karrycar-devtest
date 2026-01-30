@@ -226,6 +226,14 @@
 </template>
 
 <script setup lang="ts">
+import { Head } from '@inertiajs/vue3';
+import {
+    EyeIcon,
+    MoreHorizontalIcon,
+    PlusIcon,
+    Trash2Icon,
+} from 'lucide-vue-next';
+import { computed, ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -237,14 +245,6 @@ import {
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type Shipment } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import {
-    EyeIcon,
-    MoreHorizontalIcon,
-    PlusIcon,
-    Trash2Icon,
-} from 'lucide-vue-next';
-import { computed, ref } from 'vue';
 import AddReferentModal from './components/AddReferentModal.vue';
 import DeleteReferentModal from './components/DeleteReferentModal.vue';
 import ViewReferentModal from './components/ViewReferentModal.vue';

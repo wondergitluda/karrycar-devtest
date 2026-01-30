@@ -203,6 +203,9 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
+import { Loader2Icon, SearchIcon, UserPlusIcon } from 'lucide-vue-next';
+import { computed, onUnmounted, reactive, ref, watch } from 'vue';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -216,9 +219,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { ReferentScope, SearchReferent } from '@/types';
-import axios from 'axios';
-import { Loader2Icon, SearchIcon, UserPlusIcon } from 'lucide-vue-next';
-import { computed, onUnmounted, reactive, ref, watch } from 'vue';
 
 const props = defineProps<{
     open: boolean;

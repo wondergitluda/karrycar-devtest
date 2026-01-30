@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('referents', function (Blueprint $table) {
+        Schema::create('referents', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('team_id');
             $table->string('name');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('referent_shipment', function (Blueprint $table) {
+        Schema::create('referent_shipment', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('referent_id');
             $table->foreignId('shipment_id');
