@@ -1,28 +1,28 @@
 <?php
 
+use App\Http\Controllers\ShipmentReferentController;
 use App\Http\Controllers\ShipmentsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
-})->name('home');
+Route::get('/', fn () => Inertia::render('Welcome', [
+    'canRegister' => Features::enabled(Features::registration()),
+]))->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', fn () => Inertia::render('Dashboard'))->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware(['auth', 'verified'])
+    ->group(function (): void {
+        /**
+         * Shipments
+         */
+        Route::resource('shipments', ShipmentsController::class)->only(['index', 'show', 'destroy']);
 
-Route::middleware([
-    'auth',
-    'verified'
-])->group(function () {
-    Route::get('/shipments', [ShipmentsController::class, 'index'])->name('shipments.index');
-    Route::get('/shipments/{shipment}/show', [ShipmentsController::class, 'show'])->name('shipments.show');
-    Route::post('/shipments/{shipment}/addReferent', [ShipmentsController::class, 'addReferent'])->name('shipments.add_referent');
-});
+        /**
+         * Shipment Referents
+         */
+        Route::resource('shipments.referents', ShipmentReferentController::class)->only(['index', 'store', 'destroy']);
+    });
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

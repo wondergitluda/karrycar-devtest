@@ -39,8 +39,8 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { reactive, ref } from 'vue';
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 const props = defineProps<{
     shipmentId: number | string;
